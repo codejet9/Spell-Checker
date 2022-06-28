@@ -9,7 +9,7 @@ unordered_map<string,long long int> wordList;
 
 
 int editDistance(string s1,string s2){
-    //Bottom-Up Dynamic Programming methof for calculating edit Distances between two strings
+    //Bottom-Up Dynamic Programming method for calculating edit Distances between two strings
     int n=s1.length(),m=s2.length();
     vector<vector<int>> dp(n+1,vector<int>(m+1,0));
     
@@ -46,12 +46,12 @@ int editDistance(string s1,string s2){
 
 
 string spellCorrect(string& word){
-	//If word exists in dictionary return the word
+    //If word exists in dictionary return the word
     if(wordList.find(word)!=wordList.end()){
         return word;
     }
 
-	//calculate edit distances for current word and words in dictionary
+    //calculate edit distances for current word and words in dictionary
     map<int,vector<string>> distances;
 
     for(auto& word_freq:wordList){
@@ -59,11 +59,11 @@ string spellCorrect(string& word){
         distances[ed].push_back(word_freq.first);
     }
 
-	//Take the words with lowest edit distance, these are assumed to be the nearest correct words.
+    //Take the words with lowest edit distance, these are assumed to be the nearest correct words.
     auto lowestDistance=distances.begin();
     pair<string,long long int> mostProbableWord={"",-1};
 
-	//among the nearest correct words find the most proable word. The most probable word is the most frequently used word in english
+    //among the nearest correct words find the most proable word. The most probable word is the most frequently used word in english
     for(string& s:lowestDistance->second){
         long long int s_freq=wordList[s];
         if(s_freq>mostProbableWord.second){
@@ -117,7 +117,7 @@ int main(){
 
 
 
-    // Collecting individual words and correct
+    // Collecting individual words and correcting them
     string word="";
     for(int i=0;i<inputLength;i++){
         if(inputString[i]==' ' or inputString[i]==',' or inputString[i]=='.'){
