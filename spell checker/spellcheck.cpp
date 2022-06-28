@@ -6,24 +6,14 @@ using namespace chrono;
 mt19937 rng(chrono::steady_clock::now().time_since_epoch().count());
 
 unordered_map<string,long long int> wordList;
-long long int totalFreq=0;
-
-
-long double P(string& s){
-    long double s_freq=wordList[s];
-    long double totfreq=totalFreq;
-
-    long double res=s_freq/totfreq;
-
-    return res;
-}
-
-
 
 
 int editDistance(string s1,string s2){
+    //Bottom-Up Dynamic Programming methof for calculating edit Distances between two strings
     int n=s1.length(),m=s2.length();
     vector<vector<int>> dp(n+1,vector<int>(m+1,0));
+    
+    // Adding dummy character so that it is possible to use 1-based indexing
     s1='.'+s1;
     s2='.'+s2;
 
@@ -56,10 +46,12 @@ int editDistance(string s1,string s2){
 
 
 string spellCorrect(string& word){
+	//If word exists in dictionary return the word
     if(wordList.find(word)!=wordList.end()){
         return word;
     }
 
+	//calculate edit distances for current word and words in dictionary
     map<int,vector<string>> distances;
 
     for(auto& word_freq:wordList){
@@ -67,13 +59,15 @@ string spellCorrect(string& word){
         distances[ed].push_back(word_freq.first);
     }
 
+	//Take the words with lowest edit distance, these are assumed to be the nearest correct words.
     auto lowestDistance=distances.begin();
-    pair<string,long double> mostProbableWord={"",-1};
+    pair<string,long long int> mostProbableWord={"",-1};
 
+	//among the nearest correct words find the most proable word. The most probable word is the most frequently used word in english
     for(string& s:lowestDistance->second){
-        long double prob=P(s);
-        if(prob>mostProbableWord.second){
-            mostProbableWord={s,prob};
+        long long int s_freq=wordList[s];
+        if(s_freq>mostProbableWord.second){
+            mostProbableWord={s,s_freq};
         }
     }
 
@@ -99,7 +93,6 @@ int main(){
         while(getline(dictFile,s1) and getline(freqFile,s2)){
             long long int currentFreq=stoll(s2);
             wordList[s1]=currentFreq;
-            totalFreq+=currentFreq;
         }
         dictFile.close();
         freqFile.close();
@@ -149,6 +142,6 @@ int main(){
     auto stop1 = high_resolution_clock::now();
     auto duration = duration_cast<microseconds>(stop1 - start1);
 
-    cout<<"Time: "<<duration.count()/1000<<" microseconds"<<endl;
+    cout<<"Execution Time: "<<duration.count()/1000<<" microseconds"<<endl;
     return 0;
 }
