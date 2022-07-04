@@ -6,10 +6,11 @@ using namespace chrono;
 mt19937 rng(chrono::steady_clock::now().time_since_epoch().count());
 
 unordered_map<string,long long int> wordList;
+unordered_map<string,string> corrections;
 
 
 int editDistance(string s1,string s2){
-    //Bottom-Up Dynamic Programming methof for calculating edit Distances between two strings
+    //Bottom-Up Dynamic Programming method for calculating edit Distances between two strings
     int n=s1.length(),m=s2.length();
     vector<vector<int>> dp(n+1,vector<int>(m+1,0));
     
@@ -50,6 +51,10 @@ string spellCorrect(string& word){
     if(wordList.find(word)!=wordList.end()){
         return word;
     }
+    //if word is already corrected
+    if(corrections.find(word)!=corrections.end()){
+        return corrections[word];
+    }
 
 	//calculate edit distances for current word and words in dictionary
     map<int,vector<string>> distances;
@@ -71,6 +76,7 @@ string spellCorrect(string& word){
         }
     }
 
+    corrections[word]=mostProbableWord.first;
     return mostProbableWord.first;
 }
 
@@ -78,7 +84,6 @@ string spellCorrect(string& word){
 
 
 int main(){
-    ios_base::sync_with_stdio(false);cin.tie(0);cout.tie(0);
 
     // Reading all words and hashing them
     fstream dictFile;
@@ -103,16 +108,20 @@ int main(){
 
 
     // Reading input sentence
+    cout<<"Please enter a paragraph:"<<endl;
+    cout<<"---------------------------"<<endl;
+
+    ios_base::sync_with_stdio(false);cin.tie(0);cout.tie(0);
+    
+
     string inputString;
     getline(cin,inputString);
     int inputLength=inputString.length();
     ////////////////////////////////////
 
-
-    
     cout<<endl;
     cout<<"Corrected paragraph is: "<<endl;
-    cout<<endl;
+    cout<<"---------------------------"<<endl;
 
 
     auto start1 = high_resolution_clock::now();  //starting the timer
@@ -139,6 +148,7 @@ int main(){
 
     cout<<endl;
     cout<<endl;
+    cout<<"--------------------------------"<<endl;
     auto stop1 = high_resolution_clock::now();
     auto duration = duration_cast<microseconds>(stop1 - start1);
 
